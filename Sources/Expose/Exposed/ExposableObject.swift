@@ -7,9 +7,10 @@
 
 
 @_exported import Observation
+@_exported import Combine
 
 
 @available(iOS 17.0, *)
-public protocol ExposableObject: AnyObject, Observation.Observable {
+public protocol ExposableObject: AnyObject, Observation.Observable, ObservableObject {
     var registrar: ObservationRegistrar { get }
 }
