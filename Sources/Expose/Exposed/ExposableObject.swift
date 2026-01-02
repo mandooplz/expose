@@ -22,7 +22,7 @@ public protocol ExposableObservationObject: ExposableObject, Observation.Observa
 @available(iOS 17.0, *)
 public extension ExposableObservationObject {
     func exposedAccess(_ keyPath: AnyKeyPath) {
-        guard let typedKeyPath = keyPath as? PartialKeyPath<Self> else {
+        guard let typedKeyPath = keyPath as? KeyPath<Self, Any> else {
             assertionFailure("KeyPath root does not match \(Self.self)")
             return
         }
@@ -30,7 +30,7 @@ public extension ExposableObservationObject {
     }
 
     func exposedWithMutation(_ keyPath: AnyKeyPath, _ mutation: () -> Void) {
-        guard let typedKeyPath = keyPath as? PartialKeyPath<Self> else {
+        guard let typedKeyPath = keyPath as? KeyPath<Self, Any> else {
             assertionFailure("KeyPath root does not match \(Self.self)")
             mutation()
             return
