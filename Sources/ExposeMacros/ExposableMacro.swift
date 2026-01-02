@@ -20,7 +20,7 @@ public struct ExposableMacro: MemberMacro, ExtensionMacro {
         providingExtensionsOf type: some SwiftSyntax.TypeSyntaxProtocol,
         conformingTo protocols: [SwiftSyntax.TypeSyntax],
         in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
-            let extensionDecl = try ExtensionDeclSyntax("extension \(type.trimmed): ExposableObject, ObservableObject {}")
+            let extensionDecl = try ExtensionDeclSyntax("extension \(type.trimmed): UnifiedObservable {}")
             return [extensionDecl]
     }
     
