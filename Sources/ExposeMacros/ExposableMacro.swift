@@ -21,7 +21,13 @@ public struct ExposableMacro: MemberMacro, ExtensionMacro {
         conformingTo protocols: [SwiftSyntax.TypeSyntax],
         in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.ExtensionDeclSyntax] {
             let extensionDecl = try ExtensionDeclSyntax("extension \(type.trimmed): ExposableObject {}")
-            return [extensionDecl]
+            let observationExtensionDecl = try ExtensionDeclSyntax(
+                """
+                @available(iOS 17.0, *)
+                extension \(type.trimmed): ExposableObservationObject {}
+                """
+            )
+            return [extensionDecl, observationExtensionDecl]
     }
     
     
@@ -34,6 +40,10 @@ public struct ExposableMacro: MemberMacro, ExtensionMacro {
     ) throws -> [DeclSyntax] {
         return [
             """
+            public let objectWillChange = Combine.ObservableObjectPublisher()
+            """,
+            """
+            @available(iOS 17.0, *)
             @ObservationIgnored
             public let registrar = ObservationRegistrar()
             """

@@ -10,7 +10,7 @@ In modern iOS development, you often face the challenge of managing state across
 
 - Macro-Powered: Zero boilerplate. `@Exposable` automatically generates the registrar and handles protocol conformances.
 
-- Performance First: Leverages Apple's native Observation framework for high-performance SwiftUI updates.
+- Performance First: Leverages Apple's native Observation framework on iOS 17+, with Combine `ObservableObject` fallback for iOS 15–16.
 
 - Hybrid Support: Automatically conforms to `ObservableObject` for compatibility with legacy SwiftUI views (`@StateObject`/`@ObservedObject`).
 
@@ -88,9 +88,12 @@ struct AuctionView: View {
 }
 ```
 
+> [!NOTE]
+> On iOS 15–16, SwiftUI updates flow through `ObservableObject` (`@StateObject`/`@ObservedObject`) instead of Observation tracking.
+
 ### Via Combine (Reactive approach)
 
-Expose automatically exposes `@Exposed` properties as Combine publishers, allowing you to react to state changes using Combine’s declarative, stream-based model.
+Expose automatically exposes `@Exposed` properties as Combine publishers, allowing you to react to state changes using Combine’s declarative, stream-based model. On iOS 15–16, updates flow through `ObservableObject`/`objectWillChange` to keep SwiftUI in sync.
 
 This approach is particularly useful when you want to separate UI rendering from side effects or business logic, such as validation, analytics, or conditional flows.
 
@@ -147,11 +150,10 @@ final class AuctionViewController: UIViewController {
 
 - Swift 5.9+
 
-- iOS 17.0+ / macOS 14.0+ (Required for Observation framework)
+- iOS 15.0+ / macOS 14.0+ (Observation tracking enabled on iOS 17+)
 
 - RxSwift 6.0+
 
 ## 📄 License
 
 Expose is released under the MIT license. See LICENSE for details.
-

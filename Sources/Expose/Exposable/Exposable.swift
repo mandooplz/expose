@@ -7,6 +7,6 @@
 import Foundation
 
 
-@attached(member, names: named(registrar))
-@attached(extension, conformances: ExposableObject)
+@attached(member, names: named(objectWillChange), named(registrar))
+@attached(extension, conformances: ExposableObject, ExposableObservationObject)
 public macro Exposable() = #externalMacro(module: "ExposeMacros", type: "ExposableMacro")

@@ -10,7 +10,6 @@ import RxCocoa
 @_exported import Combine
 
 
-@available(iOS 17.0, *)
 @propertyWrapper
 public struct Exposed<T> {
     private var relay: BehaviorRelay<T>
@@ -32,13 +31,20 @@ public struct Exposed<T> {
         storage storageKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Exposed<T>>
     ) -> T {
         get {
-            // 1. SwiftUI가 이 값을 읽을 때 감지 (Tracking)
-            instance.registrar.access(instance, keyPath: wrappedKeyPath)
+            if #available(iOS 17.0, *), let observationInstance = instance as? ExposableObservationObject {
+                // SwiftUI가 이 값을 읽을 때 감지 (Tracking)
+                observationInstance.exposedAccess(wrappedKeyPath)
+            }
             return instance[keyPath: storageKeyPath].relay.value
         }
         set {
-            // 2. SwiftUI에게 이 값이 바뀔 것임을 알림 (Mutation)
-            instance.registrar.withMutation(of: instance, keyPath: wrappedKeyPath) {
+            if #available(iOS 17.0, *), let observationInstance = instance as? ExposableObservationObject {
+                // SwiftUI에게 이 값이 바뀔 것임을 알림 (Mutation)
+                observationInstance.exposedWithMutation(wrappedKeyPath) {
+                    instance[keyPath: storageKeyPath].relay.accept(newValue)
+                }
+            } else {
+                instance.objectWillChange.send()
                 instance[keyPath: storageKeyPath].relay.accept(newValue)
             }
         }
