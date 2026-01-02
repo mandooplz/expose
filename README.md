@@ -26,12 +26,26 @@ dependencies: [
 ]
 ```
 
+In your target's dependencies, add the Expose product:
+
+```swift
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "Expose", package: "Expose") // Add this line
+    ]
+)
+```
+
 
 ## 🛠 Usage
 
 ### 1. Define your ViewModel
 
 Simply annotate your class with `@Exposable` macro, then use `@Exposed` property wrapper for your state properties.
+
+> [!CAUTION]
+> When using the `@Observable` macro with `@Exposable` macro, Apple automatically generates a backing property with an underscore prefix (e.g., `_currentPrice`). This can cause a naming collision with the `@Exposed` property wrapper's internal storage.
 
 ```swift
 import Expose
@@ -49,8 +63,11 @@ final class AuctionViewModel {
 }
 ```
 
+
+
 ### 2. In SwiftUI (Observation)
 
+#### Via Observation (Recommended for iOS 17+)
 Use it like a standard @Observable property. It works seamlessly with modern animations like `.contentTransition`.
 
 ```swift
@@ -71,9 +88,38 @@ struct AuctionView: View {
 }
 ```
 
+### Via Combine (Reactive approach)
+
+Expose automatically exposes `@Exposed` properties as Combine publishers, allowing you to react to state changes using Combine’s declarative, stream-based model.
+
+This approach is particularly useful when you want to separate UI rendering from side effects or business logic, such as validation, analytics, or conditional flows.
+
+```swift
+struct AuctionCombineView: View {
+    @StateObject private var viewModel = AuctionViewModel()
+    @State private var alertVisible = false
+
+    var body: some View {
+        VStack {
+            Text("$\(viewModel.currentPrice)")
+                .font(.system(.largeTitle, design: .monospaced))
+        }
+        .onReceive(viewModel.$currentPrice.publisher) { newPrice in
+            if newPrice > 5000 {
+                alertVisible = true
+            }
+        }
+        .alert("High Price Alert", isPresented: $alertVisible) {
+            Button("OK", role: .cancel) {}
+        }
+    }
+}
+
+```
+
 ### 3. In UIKit (RxSwift & Combine)
 
-Access specialized streams via the projected value (`$`).
+By using the projected value (`$`), you can access different reactive streams depending on your needs:
 
 ```swift
 final class AuctionViewController: UIViewController {
