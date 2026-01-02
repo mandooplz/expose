@@ -7,7 +7,7 @@
 
 
 import RxCocoa
-import Combine
+@_exported import Combine
 
 
 @available(iOS 17.0, *)
@@ -26,7 +26,7 @@ public struct Exposed<T> {
 
     /// 핵심: Observation 통합 서브스크립트
     /// EnclosingSelf가 NewExposable을 채택하고 있어야 registrar에 접근 가능합니다.
-    public static subscript<EnclosingSelf: ExposableObject> (
+    public static subscript<EnclosingSelf: UnifiedObservable> (
         _enclosingInstance instance: EnclosingSelf,
         wrapped wrappedKeyPath: ReferenceWritableKeyPath<EnclosingSelf, T>,
         storage storageKeyPath: ReferenceWritableKeyPath<EnclosingSelf, Exposed<T>>
