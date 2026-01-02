@@ -1,0 +1,33 @@
+{
+  "originHash" : "ac1adaaa986e886f0263d886be14cd4588491eca0fc770b882de0ccc571cd225",
+  "pins" : [
+    {
+      "identity" : "rxcombine",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CombineCommunity/RxCombine.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "010ef6fcca69cbbabe8ed7f52b31485b70c3a22d"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "5004a18539bd68905c5939aa893075f578f4f03d"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
