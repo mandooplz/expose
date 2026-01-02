@@ -43,14 +43,27 @@ public struct ExposableMacro: MemberMacro, ExtensionMacro {
         in context: some MacroExpansionContext
     ) throws -> [DeclSyntax] {
         return [
-            // 1. iOS 17 이상에서만 유효한 registrar
-            """
-            @available(iOS 17.0, *)
-            @ObservationIgnored
-            public let registrar = ObservationRegistrar()
-            """,
-            // 2. 모든 버전에서 필요한 Combine 퍼블리셔 (iOS 13+)
-            "public let objectWillChange = Combine.ObservableObjectPublisher()"
-        ]
+                // 1. Observation을 지원하는 환경인지 체크하는 조건부 컴파일 구문 추가
+                """
+                #if canImport(Observation)
+                @ObservationIgnored
+                private let _registrar: Any? = {
+                    if #available(iOS 17.0, *) {
+                        return ObservationRegistrar()
+                    }
+                    return nil
+                }()
+
+                @available(iOS 17.0, *)
+                var registrar: ObservationRegistrar {
+                    _registrar as! ObservationRegistrar
+                }
+                #endif
+                """,
+                
+                // 2. Combine은 iOS 13부터이므로 비교적 안전하지만,
+                // 하위 호환을 위해 명시적으로 유지
+                "public let objectWillChange = Combine.ObservableObjectPublisher()"
+            ]
     }
 }
