@@ -37,7 +37,6 @@ In your target's dependencies, add the Expose product:
 )
 ```
 
-
 ## 🛠 Usage
 
 ### 1. Define your ViewModel
@@ -53,33 +52,32 @@ import Observation
 
 @Exposable // Generates registrar and conforms to Exposable & ObservableObject
 final class AuctionViewModel {
-    
+
     // Read-only from outside, mutable from inside
     @Exposed private(set) var currentPrice: Int = 1000
-    
+
     func updatePrice(_ newPrice: Int) {
         self.currentPrice = newPrice
     }
 }
 ```
 
-
-
 ### 2. In SwiftUI (Observation)
 
 #### Via Observation (Recommended for iOS 17+)
+
 Use it like a standard @Observable property. It works seamlessly with modern animations like `.contentTransition`.
 
 ```swift
 struct AuctionView: View {
     @State private var viewModel = AuctionViewModel()
-    
+
     var body: some View {
         VStack {
             Text("$\(viewModel.currentPrice)")
                 .font(.system(.largeTitle, design: .monospaced))
                 .contentTransition(.numericText()) // Smooth scrolling digit animation
-            
+
             Button("Bid") {
                 viewModel.updatePrice(viewModel.currentPrice + 100)
             }
@@ -93,6 +91,15 @@ struct AuctionView: View {
 Expose automatically exposes `@Exposed` properties as Combine publishers, allowing you to react to state changes using Combine’s declarative, stream-based model.
 
 This approach is particularly useful when you want to separate UI rendering from side effects or business logic, such as validation, analytics, or conditional flows.
+
+> [!NOTE]
+> Although this section uses Combine-style APIs, **Expose does not rely on Combine for state propagation internally**.
+>
+> All state changes are driven by Apple’s **Observation framework**, and the Combine publisher exposed via `$property.publisher`
+> is merely an **adapter layer** that bridges Observation updates into Combine streams.
+>
+> This ensures that SwiftUI views benefit from Observation’s high-performance diffing and update model,
+> while still allowing Combine to be used for side effects, coordination, and legacy interoperability.
 
 ```swift
 struct AuctionCombineView: View {
@@ -125,14 +132,14 @@ By using the projected value (`$`), you can access different reactive streams de
 final class AuctionViewController: UIViewController {
     let viewModel = AuctionViewModel()
     let disposeBag = DisposeBag()
-    
+
     func setupBindings() {
         // 1. RxSwift Binding
         viewModel.$currentPrice.driver
             .map { "\($0)" }
             .drive(priceLabel.rx.text)
             .disposed(by: disposeBag)
-            
+
         // 2. Combine Subscription
         viewModel.$currentPrice.publisher
             .sink { price in
@@ -154,4 +161,3 @@ final class AuctionViewController: UIViewController {
 ## 📄 License
 
 Expose is released under the MIT license. See LICENSE for details.
-
