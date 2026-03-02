@@ -126,7 +126,7 @@ public struct Exposed<T> {
     ///
     /// 올바른 Observation 및 반응형 전파 시맨틱을 보장하기 위해
     /// enclosing-instance subscript를 통해서만 접근해야 합니다.
-    @available(*, unavailable, message: "Not available")
+    @available(*, unavailable, message: "@Exposed can only be accessed on ExposableObject classes")
     public var wrappedValue: T {
         get { fatalError() }
         set { fatalError() }
