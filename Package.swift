@@ -20,7 +20,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "602.0.0-latest"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "6.6.0"),
-        .package(url: "https://github.com/CombineCommunity/RxCombine.git", from: "1.4.0")
+        .package(url: "https://github.com/CombineCommunity/RxCombine.git", from: "2.0.0")
     ],
     targets: [
         .target(

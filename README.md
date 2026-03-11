@@ -22,7 +22,7 @@ Swift Package Manager를 통해 프로젝트에 **Expose**를 추가하세요.
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/mandooplz/expose-swift.git", from: "0.1.0")
+    .package(url: "https://github.com/mandooplz/Expose.git", from: "0.1.2")
 ]
 ```
 
@@ -36,6 +36,8 @@ dependencies: [
     ]
 )
 ```
+
+`0.1.2`부터는 `RxCombine 2.x`를 사용하므로 `RxSwift 6.6+` 프로젝트와 패키지 해석 충돌 없이 함께 사용할 수 있습니다.
 
 ## 🛠 사용법
 
@@ -156,7 +158,7 @@ final class AuctionViewController: UIViewController {
 
 - iOS 17.0+ / macOS 14.0+ (Observation 프레임워크 필수)
 
-- RxSwift 6.0+
+- RxSwift 6.6+
 
 ## 📄 라이선스
 
